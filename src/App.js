@@ -44,6 +44,12 @@ const App = () => {
                     handleFavoriteClick={AddFavoriteMovie} 
                 />
 			</div>
+            <div className='row d-flex align-items-center mt-4 mb-4'>
+				<MovieListHeading heading='Favourites' />
+			</div>
+			<div className='row'>
+				<MovieList movies={favorites} favoriteComponent={AddFavorites} />
+			</div>
 		</div>
 
         //line 35 we are passing AddFavorite component as a prop(favoriteComponent)
