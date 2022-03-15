@@ -4,55 +4,68 @@ import './App.css';
 import MovieList from './components/MovieList';
 import MovieListHeading from './components/MovieListHeading';
 import SearchBox from './components/SearchBox';
-import AddFavorites from './components/AddToFavorites';
+// import AddFavourites from './components/AddFavourites';
+import AddFavourite from './components/AddToFavorites';
+// import RemoveFavourites from './components/RemoveFavourites';
+import RemoveFavourites from './components/RemoveFavorites';
 
 const App = () => {
 	const [movies, setMovies] = useState([]);
-    const [searchValue, setSearchValue] = useState(''); //state value to store what the user types
-    const [favorites, setFavorites] = useState([]);
+	const [searchValue, setSearchValue] = useState('');
+	const [favourites, setFavourites] = useState([]);
 
-    const getMovieRequest = async (searchValue) => {
-        const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=82f1a1ee`;
+	const getMovieRequest = async (searchValue) => {
+		const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=82f1a1ee`;
 
-        const response = await fetch(url);
-        const responseJson = await response.json();
+		const response = await fetch(url);
+		const responseJson = await response.json();
 
-        if (responseJson.Search){
-            setMovies(responseJson.Search);
-        }
-    };
+		if (responseJson.Search) {
+			setMovies(responseJson.Search);
+		}
+	};
 
-    const AddFavoriteMovie = (movie) => {
-        const newFavoriteList = [...favorites, movie];
-        setFavorites(newFavoriteList);
-    };
+	const addFavouriteMovie = (movie) => {
+		const newFavouriteList = [...favourites, movie];
+		setFavourites(newFavouriteList);
+	};
 
-    useEffect(() => {
-        getMovieRequest(searchValue);
-    }, [searchValue]);
-	
+	const removeFavouriteMovie = (movie) => {
+		const newFavouriteList = favourites.filter(
+			(favourite) => favourite.imdbID !== movie.imdbID
+		);
+
+		setFavourites(newFavouriteList);
+	};
+
+	useEffect(() => {
+		getMovieRequest(searchValue);
+	}, [searchValue]);
+
 	return (
 		<div className='container-fluid movie-app'>
-            <div className='row d-flex align-items-center mt-4 mb-4'>
-                <MovieListHeading heading='Movies'/>
-                <SearchBox searchValue={searchValue} setSearchValue={setSearchValue} />
-            </div>
-			<div className='row'>
-                <MovieList 
-                    movies={movies} 
-                    favoriteComponent={AddFavorites}
-                    handleFavoriteClick={AddFavoriteMovie} 
-                />
+			<div className='row d-flex align-items-center mt-4 mb-4'>
+				<MovieListHeading heading='Movies' />
+				<SearchBox searchValue={searchValue} setSearchValue={setSearchValue} />
 			</div>
-            <div className='row d-flex align-items-center mt-4 mb-4'>
+			<div className='row'>
+				<MovieList
+					movies={movies}
+					favouriteComponent={AddFavourite}
+					handleFavouritesClick={addFavouriteMovie}
+				/>
+			</div>
+			<div className='row d-flex align-items-center mt-4 mb-4'>
 				<MovieListHeading heading='Favourites' />
 			</div>
 			<div className='row'>
-				<MovieList movies={favorites} favoriteComponent={AddFavorites} />
+				<MovieList
+					movies={favourites}
+					handleFavouritesClick={removeFavouriteMovie}
+					favouriteComponent={RemoveFavourites}
+				/>
 			</div>
 		</div>
-
-        //line 35 we are passing AddFavorite component as a prop(favoriteComponent)
 	);
 };
 
